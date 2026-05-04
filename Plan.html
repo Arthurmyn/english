@@ -1,0 +1,463 @@
+
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+
+    --c-bg:        #0f1117;
+    --c-surface:   #181c27;
+    --c-surface2:  #1e2333;
+    --c-border:    rgba(255,255,255,0.07);
+    --c-border2:   rgba(255,255,255,0.12);
+
+    --c-text:      #e8eaf0;
+    --c-text2:     #8891a8;
+    --c-text3:     #545e74;
+
+    --c-accent:    #6c8ef7;
+    --c-accent2:   #8b5cf6;
+
+    --c-must-bg:   rgba(239, 68, 68, 0.12);
+    --c-must-text: #f87171;
+    --c-imp-bg:    rgba(245, 158, 11, 0.12);
+    --c-imp-text:  #fbbf24;
+    --c-opt-bg:    rgba(100, 116, 139, 0.15);
+    --c-opt-text:  #8891a8;
+    --c-done-bg:   rgba(52, 211, 153, 0.12);
+    --c-done-text: #34d399;
+
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--c-bg);
+    font-family: var(--font-sans);
+    color: var(--c-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 3rem;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 2rem;
+  }
+  .header-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--c-accent), var(--c-accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: var(--c-text3);
+  }
+
+  /* Stats + progress */
+  .stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--c-text2);
+  }
+  .stats-pct {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-accent);
+  }
+  .progress-bar {
+    height: 5px;
+    background: var(--c-surface2);
+    border-radius: 99px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--c-accent), var(--c-accent2));
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 0 12px rgba(108,142,247,0.4);
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+    padding: 5px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: calc(var(--radius) + 4px);
+  }
+  .tab {
+    padding: 6px 14px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    color: var(--c-text2);
+    transition: all 0.18s ease;
+    letter-spacing: 0.01em;
+  }
+  .tab:hover { color: var(--c-text); background: var(--c-surface2); }
+  .tab.active {
+    background: linear-gradient(135deg, var(--c-accent), var(--c-accent2));
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(108,142,247,0.35);
+  }
+
+  /* Groups */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .group { margin-bottom: 1.5rem; }
+  .group-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--c-text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .group-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 12px;
+    background: linear-gradient(180deg, var(--c-accent), var(--c-accent2));
+    border-radius: 99px;
+  }
+
+  /* Items */
+  .items { display: flex; flex-direction: column; gap: 5px; }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 14px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--c-text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .item:hover {
+    border-color: var(--c-border2);
+    background: var(--c-surface2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  }
+  .item:active { transform: translateY(0); }
+
+  .item.done {
+    opacity: 0.4;
+  }
+  .item.done .item-label {
+    text-decoration: line-through;
+    text-decoration-color: var(--c-text3);
+  }
+  .item.done .check {
+    background: var(--c-done-bg);
+    border-color: var(--c-done-text);
+  }
+  .item.done .check::after {
+    content: '';
+    display: block;
+    width: 9px;
+    height: 5px;
+    border-left: 2px solid var(--c-done-text);
+    border-bottom: 2px solid var(--c-done-text);
+    transform: rotate(-45deg) translate(1px, -1px);
+  }
+
+  .check {
+    width: 19px;
+    height: 19px;
+    min-width: 19px;
+    border: 1.5px solid var(--c-border2);
+    border-radius: 5px;
+    background: var(--c-surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .item-label { flex: 1; line-height: 1.4; }
+
+  /* Badges */
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 99px;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+  .badge.must { background: var(--c-must-bg); color: var(--c-must-text); }
+  .badge.imp  { background: var(--c-imp-bg);  color: var(--c-imp-text); }
+  .badge.opt  { background: var(--c-opt-bg);  color: var(--c-opt-text); }
+</style>
+
+<div class="container">
+  <div class="header">
+    <div class="header-title">English Plan A2 → B1</div>
+    <div class="header-sub">Отмечай темы по мере изучения</div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="stats">
+    <span id="stats-text"></span>
+    <span class="stats-pct" id="stats-pct"></span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div id="sections"></div>
+</div>
+
+<script>
+const data = {
+  "Грамматика": {
+    "Обязательно": [
+      ["Present Simple", "must"],
+      ["Present Continuous", "must"],
+      ["Past Simple (правильные глаголы)", "must"],
+      ["Past Simple (неправильные глаголы - топ 50)", "must"],
+      ["Future: will / going to", "must"],
+      ["Вопросы: порядок слов (Do/Did/Is/Are/Have)", "must"],
+      ["Модальные: can, could, should, must, have to", "must"],
+      ["Артикли: a / an / the / ничего", "must"],
+      ["Предлоги места и времени: in/on/at/to", "must"],
+      ["Местоимения: I/me/my/mine", "must"],
+      ["Second Conditional: If I had time, I would...", "must"],
+    ],
+    "Важно": [
+      ["Present Perfect: have/has + V3", "imp"],
+      ["Present Perfect Continuous: I've been waiting...", "imp"],
+      ["Past Continuous: was/were + ing", "imp"],
+      ["Comparatives/Superlatives: bigger, the biggest", "imp"],
+      ["Условные 1: If I have time, I will...", "imp"],
+      ["Tag questions: It's nice, isn't it? / You know him, don't you?", "imp"],
+      ["Relative clauses: the guy who / the thing that / a place where", "imp"],
+      ["Reported speech: He said that... / She asked if...", "imp"],
+      ["There is / There are", "imp"],
+      ["Much / Many / A lot of / A few / A little", "imp"],
+      ["Some / Any / No", "imp"],
+      ["Предлоги направления: through, across, along", "imp"],
+    ],
+    "Если успеешь": [
+      ["Passive Voice: is made / was built", "opt"],
+      ["Used to: I used to play...", "opt"],
+      ["Gerund vs Infinitive: enjoy doing / want to do", "opt"],
+      ["Future Continuous: will be doing", "opt"],
+      ["Third Conditional: If I had known, I would have...", "opt"],
+    ]
+  },
+  "Слова": {
+    "Базовые темы (A2)": [
+      ["Числа, даты, время", "must"],
+      ["Семья и люди", "must"],
+      ["Еда и напитки", "must"],
+      ["Транспорт и направления", "must"],
+      ["Тело и здоровье", "must"],
+      ["Одежда и шоппинг", "must"],
+      ["Работа и учёба", "must"],
+      ["Дом и мебель", "imp"],
+    ],
+    "Разговорные темы (B1)": [
+      ["Эмоции и чувства", "must"],
+      ["Мнения и согласие/несогласие", "must"],
+      ["Описание людей и характер", "imp"],
+      ["Путешествия и туризм", "must"],
+      ["Технологии и соцсети", "imp"],
+      ["Спорт и соревнования", "must"],
+      ["Природа и погода", "opt"],
+    ],
+    "Фразы и выражения": [
+      ["Fillers: well, you know, I mean, actually", "must"],
+      ["Согласие: exactly, that's right, absolutely", "must"],
+      ["Несогласие: I'm not sure, I don't think so", "must"],
+      ["Уточнение: could you repeat? / what do you mean?", "must"],
+      ["Выигрыш времени: let me think, that's a good question, how can I put it...", "must"],
+      ["Обход незнакомых слов: the thing you use to... / a kind of... / it's like...", "must"],
+      ["Вежливые просьбы: Could you possibly...? / Would you mind...?", "imp"],
+      ["Извинения и благодарности: I'm sorry to bother you / I really appreciate it", "imp"],
+      ["Переходы: also, however, on the other hand", "imp"],
+      ["Phrasal verbs топ-30", "imp"],
+    ],
+    "Деньги и числа в разговоре": [
+      ["Цены, скидки, сдача: How much is it? / Do you have change?", "must"],
+      ["Телефонные номера, адреса — произношение", "must"],
+      ["Проценты, размеры, расстояния", "imp"],
+    ]
+  },
+  "Listening": {
+    "Навыки понимания": [
+      ["Понимать общий смысл (gist)", "must"],
+      ["Улавливать ключевые слова", "must"],
+      ["Понимать числа, даты, имена", "must"],
+      ["Понимать американский акцент", "must"],
+      ["Понимать британский акцент", "imp"],
+      ["Понимать неформальную речь и сленг", "imp"],
+      ["Понимать юмор и сарказм из контекста", "imp"],
+      ["Понимать быструю речь нативов", "opt"],
+    ],
+    "Типы аудио (практика)": [
+      ["Простые диалоги (VOA Learning English)", "must"],
+      ["Объявления (аэропорт, транспорт)", "must"],
+      ["Инструкции и указания", "must"],
+      ["Интервью и подкасты (6 Minute English)", "imp"],
+      ["Сериалы с субтитрами EN (Friends, Modern Family)", "imp"],
+      ["Обычный YouTube без субтитров", "opt"],
+    ]
+  },
+  "Speaking": {
+    "Произношение": [
+      ["Звук TH (this / think)", "must"],
+      ["Звук W (water, work, will)", "must"],
+      ["Звук R (right, run, very)", "must"],
+      ["Редукция: gonna, wanna, kinda", "imp"],
+      ["Ударение в словах и предложениях", "imp"],
+      ["Интонация в вопросах", "imp"],
+      ["Connected speech: linking & elision (want_to, not_at_all)", "imp"],
+      ["Интонация вежливости vs нейтральности", "imp"],
+    ],
+    "Разговорные навыки": [
+      ["Представление себя", "must"],
+      ["Рассказ о себе (2-3 мин)", "must"],
+      ["Small talk: погода, откуда, чем занимаешься", "must"],
+      ["Выражение мнения с аргументом", "must"],
+      ["Попросить о помощи / уточнить", "must"],
+      ["Телефонный / видеозвонок: Can you hear me? / I'll call you back", "must"],
+      ["Пересказ фильма / новости / разговора своими словами", "imp"],
+      ["Описать проблему и решение", "imp"],
+      ["Рассказать историю в прошлом", "imp"],
+      ["Дискуссия: согласие и несогласие", "imp"],
+    ]
+  },
+  "Reading": {
+    "Навыки чтения": [
+      ["Skimming - быстро понять о чём текст", "must"],
+      ["Scanning - найти конкретную информацию", "must"],
+      ["Понять смысл незнакомого слова из контекста", "must"],
+      ["Понять инструкции и указания", "must"],
+      ["Читать неформальные тексты (соцсети)", "imp"],
+      ["Читать статьи средней сложности", "imp"],
+    ],
+    "Типы текстов (практика)": [
+      ["Вывески, меню, объявления", "must"],
+      ["Сообщения и письма", "must"],
+      ["Короткие статьи (BBC Learning English)", "imp"],
+      ["Reddit / Medium статьи по интересам", "imp"],
+      ["Описания продуктов и инструкции", "opt"],
+    ]
+  },
+  "Writing": {
+    "Базовые навыки": [
+      ["Писать простые предложения без ошибок", "must"],
+      ["Связывать предложения: and, but, because, so", "must"],
+      ["Писать абзац с главной мыслью и деталями", "must"],
+      ["Использовать правильные артикли и предлоги", "must"],
+    ],
+    "Типы текстов": [
+      ["Личное сообщение / мессенджер", "must"],
+      ["Email (формальный и неформальный)", "imp"],
+      ["Короткий рассказ о себе (bio)", "must"],
+      ["Отзыв / комментарий", "opt"],
+    ]
+  }
+};
+
+const tabs = document.getElementById('tabs');
+const sections = document.getElementById('sections');
+const progressFill = document.getElementById('progress-fill');
+const statsText = document.getElementById('stats-text');
+const keys = Object.keys(data);
+let activeTab = keys[0];
+let done = JSON.parse(localStorage.getItem('eng_done') || '{}');
+
+function countAll() {
+  let total = 0, checked = 0;
+  keys.forEach(tab => {
+    Object.values(data[tab]).forEach(items => {
+      items.forEach(([label]) => {
+        total++;
+        if (done[tab + label]) checked++;
+      });
+    });
+  });
+  return { total, checked };
+}
+
+function updateProgress() {
+  const { total, checked } = countAll();
+  const pct = Math.round(checked / total * 100);
+  progressFill.style.width = pct + '%';
+  statsText.textContent = checked + ' из ' + total + ' выполнено';
+  document.getElementById('stats-pct').textContent = pct + '%';
+}
+
+function render() {
+  tabs.innerHTML = '';
+  sections.innerHTML = '';
+  keys.forEach(tab => {
+    const t = document.createElement('button');
+    t.className = 'tab' + (tab === activeTab ? ' active' : '');
+    t.textContent = tab;
+    t.onclick = () => { activeTab = tab; render(); };
+    tabs.appendChild(t);
+
+    const sec = document.createElement('div');
+    sec.className = 'section' + (tab === activeTab ? ' active' : '');
+    const groups = data[tab];
+    Object.entries(groups).forEach(([gname, items]) => {
+      const g = document.createElement('div');
+      g.className = 'group';
+      g.innerHTML = '<div class="group-title">' + gname + '</div><div class="items"></div>';
+      const itemsEl = g.querySelector('.items');
+      items.forEach(([label, priority]) => {
+        const key = tab + label;
+        const el = document.createElement('div');
+        el.className = 'item' + (done[key] ? ' done' : '');
+        el.innerHTML = '<div class="check"></div><span class="item-label">' + label + '</span><span class="badge ' + priority + '">' + (priority === 'must' ? 'обязательно' : priority === 'imp' ? 'важно' : 'если успеешь') + '</span>';
+        el.onclick = () => {
+          done[key] = !done[key];
+          try { localStorage.setItem('eng_done', JSON.stringify(done)); } catch(e) {}
+          el.classList.toggle('done');
+          updateProgress();
+        };
+        itemsEl.appendChild(el);
+      });
+      sec.appendChild(g);
+    });
+    sections.appendChild(sec);
+  });
+  updateProgress();
+}
+
+render();
+</script>
